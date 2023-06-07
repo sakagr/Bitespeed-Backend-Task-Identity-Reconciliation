@@ -8,4 +8,7 @@ const testDbConnection = async () => {
     console.log("Connection has been established successfully.");
 };
 
-module.exports = {testDbConnection};
+module.exports = {
+    sq:  sequelize,
+    testDbConnection
+};
