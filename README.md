@@ -12,5 +12,6 @@ The API required HTTP POST verb with payload mentioned in the assignment link.
 Tech Stack Used:
  - Node.JS
  - Express.JS
+ - Javascript
  - Sequelize
  - Postgres DB
