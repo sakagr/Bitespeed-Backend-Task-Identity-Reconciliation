@@ -1,5 +1,12 @@
 const crud = require('./db/crud');
 
+/**
+ * Checks if contact exists or not.
+ * If exists returns details
+ * If does not exist, creates a new contact and returns details
+ * @param email 
+ * @param phoneNumber  
+ */
 async function identify(email, phoneNumber) {
     let contacts;
     if(email && phoneNumber) {
@@ -11,13 +18,18 @@ async function identify(email, phoneNumber) {
     } else {
         throw new Error("Please provide either email or phoneNumber");
     }
+    //Check if contact is null or empty to decide whether to create a new contact or not
     if(contacts && contacts.length) {
+        //Check if contact exists
         let indexOfContact = contacts.findIndex(contact => contact.email === email && contact.phoneNumber === phoneNumber);        
+        //If contact does not exist create a secondary contact
         if(indexOfContact<0) {
             let primaryContact = contacts.find(contact => contact.linkPrecedence === "primary");
             contacts.push(await crud.createSecondaryContact(email, phoneNumber, primaryContact.id));
         }
     } else {
+        //Contacts are empty so no existing contact with matching email or phoneNumber
+        //Create a new primary contact
         contacts = [];
         contacts.push(await crud.createPrimaryContact(email, phoneNumber));
     }
@@ -30,6 +42,12 @@ async function findContactsByEmailOrPhone(email, phoneNumber) {
     return await updatePrimarySecondaryContacts(contacts);
 }
 
+/**
+ * Checks if there are multiple primary contacts.
+ * If there are multiple primary contact, keeps the oldest contact as primary and others as secondary
+ * Also, changes linkedId, of contacts linked with newer primary contact, to oldest contact id
+ * @param contacts 
+ */
 async function updatePrimarySecondaryContacts(contacts) {
     let primaryContacts = contacts.filter(contact => contact.linkPrecedence === "primary");
     if(primaryContacts.length > 1) {
@@ -52,6 +70,10 @@ async function updatePrimarySecondaryContacts(contacts) {
     return contacts;
 }
 
+/**
+ * Constructs response object
+ * @param contacts 
+ */
 function createResponse(contacts) {
     let res = { contact: {
         primaryContactId: undefined,

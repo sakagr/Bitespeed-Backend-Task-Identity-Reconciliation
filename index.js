@@ -11,6 +11,15 @@ app.get('/', (req, res) => {
     res.send("Hello! This is Bitespeed Backend Task - Identity Reconciliation");
 });
 
+/**
+ * POST: /identify
+ * Expected paylod:
+ * {
+ *      email? : String,
+ *      phoneNumber?: String
+ * }
+ * This api needs to either have email or phoneNumber, or both, in the payload
+ */
 app.post('/identify', async (req, res) => {
     const {email , phoneNumber} = req.body;
     await identify(email, phoneNumber).then(resJson => {

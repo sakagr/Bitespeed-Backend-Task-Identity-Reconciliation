@@ -128,3 +128,6 @@ package-lock.json
 
 # env
 .env
+
+#zip
+*.zip
